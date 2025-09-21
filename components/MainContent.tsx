@@ -6,11 +6,10 @@ import InteractiveText from './InteractiveText';
 const ArticleDisplay: React.FC<{
     article: Article;
     onMainItemSelect: (article: Article) => void;
-    onCrossReferenceSelect: (article: Article) => void;
-    onTermSelect: (term: LegalTerm) => void;
+    onLinkSelect: (item: SelectableItem) => void;
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-}> = ({ article, onMainItemSelect, onCrossReferenceSelect, onTermSelect, articleMap, legalTermMap }) => (
+}> = ({ article, onMainItemSelect, onLinkSelect, articleMap, legalTermMap }) => (
     <div key={article.id} id={article.title} className="mb-6 scroll-mt-8">
         <h5 className="font-semibold text-lg">
             <a 
@@ -27,8 +26,7 @@ const ArticleDisplay: React.FC<{
                     text={p} 
                     articleMap={articleMap} 
                     legalTermMap={legalTermMap} 
-                    onCrossReferenceSelect={onCrossReferenceSelect} 
-                    onTermSelect={onTermSelect} 
+                    onLinkSelect={onLinkSelect}
                 />
             </p>
         ))}
@@ -128,11 +126,10 @@ interface MainContentProps {
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
     onMainItemSelect: (item: SelectableItem) => void;
-    onCrossReferenceSelect: (item: SelectableItem) => void;
-    onTermSelect: (item: SelectableItem) => void;
+    onLinkSelect: (item: SelectableItem) => void;
 }
 
-const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap, legalTermMap, onMainItemSelect, onCrossReferenceSelect, onTermSelect }) => {
+const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap, legalTermMap, onMainItemSelect, onLinkSelect }) => {
     return (
         <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg">
             <div className="text-center mb-8 border-b border-slate-200 pb-8">
@@ -156,8 +153,7 @@ const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap,
                                 key={article.id} 
                                 article={article} 
                                 onMainItemSelect={onMainItemSelect}
-                                onCrossReferenceSelect={onCrossReferenceSelect}
-                                onTermSelect={onTermSelect}
+                                onLinkSelect={onLinkSelect}
                                 articleMap={articleMap} 
                                 legalTermMap={legalTermMap}
                             />
@@ -172,8 +168,7 @@ const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap,
                             key={article.id} 
                             article={article} 
                             onMainItemSelect={onMainItemSelect} 
-                            onCrossReferenceSelect={onCrossReferenceSelect}
-                            onTermSelect={onTermSelect}
+                            onLinkSelect={onLinkSelect}
                             articleMap={articleMap}
                             legalTermMap={legalTermMap} 
                         />

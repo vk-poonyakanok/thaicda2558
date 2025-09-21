@@ -49,11 +49,11 @@ interface InteractiveTextProps {
     text: string;
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-    onCrossReferenceSelect: (item: SelectableItem) => void;
-    onTermSelect: (item: SelectableItem) => void;
+    onLinkSelect: (item: SelectableItem) => void;
+    onArticleLinkSelectOverride?: (article: Article) => void;
 }
 
-const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, legalTermMap, onCrossReferenceSelect, onTermSelect }) => {
+const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, legalTermMap, onLinkSelect, onArticleLinkSelectOverride }) => {
     const regex = useMemo(() => {
         const terms = Array.from(legalTermMap.keys()).sort((a, b) => b.length - a.length).join('|');
         const articles = 'มาตรา\\s*[\\d๑๒๓๔๕๖๗๘๙๐]+';
@@ -74,12 +74,12 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, leg
             if (term) {
                 const termTitle = sanitizeHTML(term.displayName || term.term);
                 const docList = term.documents.map(d => `<li>${sanitizeHTML(d.title)}</li>`).join('');
-                const tooltipContent = `<b>${termTitle}</b><ul class="list-disc list-inside text-left text-xs">${docList}</ul>`;
+                const tooltipContent = `<b>${termTitle}</b><ul class="list-disc list-inside text-left text-xs mt-1">${docList}</ul>`;
                 return (
                     <TippyWrapper key={index} content={tooltipContent}>
                         <a
                             href={`#${encodeURIComponent(term.term)}`}
-                            onClick={(e) => { e.preventDefault(); onTermSelect(term); }}
+                            onClick={(e) => { e.preventDefault(); onLinkSelect(term); }}
                             className="font-semibold text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
                         >
                             {part}
@@ -91,13 +91,14 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, leg
             const normalizedPart = normalizeText(trimmedPart);
             const article = articleMap.get(normalizedPart);
             if (article) {
-                const tooltipContent = sanitizeHTML(article.content[0] || 'ไม่มีข้อมูล');
+                const clickHandler = onArticleLinkSelectOverride ? () => onArticleLinkSelectOverride(article) : () => onLinkSelect(article);
+                const tooltipContent = `<b>${sanitizeHTML(article.title)}</b><p class="text-xs mt-1">${sanitizeHTML(article.content[0] || 'ไม่มีข้อมูล')}</p>`;
                 return (
                     <TippyWrapper key={index} content={tooltipContent}>
                         <a
                             href={`#${encodeURIComponent(article.title)}`}
-                            onClick={(e) => { e.preventDefault(); onCrossReferenceSelect(article); }}
-                            className="font-semibold text-sky-700 hover:text-sky-900 hover:underline cursor-pointer"
+                            onClick={(e) => { e.preventDefault(); clickHandler(); }}
+                            className="font-semibold text-blue-700 hover:text-blue-900 hover:underline cursor-pointer"
                         >
                             {part}
                         </a>
@@ -107,7 +108,7 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, leg
             
             return <React.Fragment key={index}>{part}</React.Fragment>;
         });
-    }, [text, regex, articleMap, legalTermMap, onCrossReferenceSelect, onTermSelect]);
+    }, [text, regex, articleMap, legalTermMap, onLinkSelect, onArticleLinkSelectOverride]);
 
     return <>{parts}</>;
 };

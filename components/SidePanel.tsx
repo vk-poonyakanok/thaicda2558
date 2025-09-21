@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import type { SelectableItem, LegalTerm, LegalTermDocument, Article } from '../types';
 import InteractiveText from './InteractiveText';
@@ -6,9 +7,9 @@ const FormattedContentRenderer: React.FC<{
     content: string[];
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-    onCrossReferenceSelect: (item: SelectableItem) => void;
-    onTermSelect: (item: SelectableItem) => void;
-}> = ({ content, ...props }) => {
+    onLinkSelect: (item: SelectableItem) => void;
+    onArticleLinkSelectOverride?: (article: Article) => void;
+}> = ({ content, onArticleLinkSelectOverride, ...props }) => {
     const fullContent = content.join('\n');
     const regex = /(<table[\s\S]*?<\/table>|<b>[\s\S]*?<\/b>|<div[\s\S]*?<\/div>|<s>[\s\S]*?<\/s>)/g;
     const parts = fullContent.split(regex);
@@ -24,25 +25,25 @@ const FormattedContentRenderer: React.FC<{
                 }
                 if (part.startsWith('<b>')) {
                     const innerContent = part.substring(3, part.length - 4);
-                    return <h6 key={key} className="font-bold text-base mt-4 mb-2"><InteractiveText text={innerContent} {...props} /></h6>;
+                    return <h6 key={key} className="font-bold text-base mt-4 mb-2"><InteractiveText text={innerContent} {...props} onArticleLinkSelectOverride={onArticleLinkSelectOverride} /></h6>;
                 }
                 if (part.startsWith('<div')) {
                     const contentMatch = part.match(/^<div.*?>(.*)<\/div>$/s);
                     const innerContent = contentMatch ? contentMatch[1].replace(/<br\s*\/?>/g, '\n') : '';
                     return (
                         <div key={key} className='not-prose text-sm p-4 bg-slate-50 border rounded-md my-4 font-mono whitespace-pre-line'>
-                            <InteractiveText text={innerContent} {...props} />
+                            <InteractiveText text={innerContent} {...props} onArticleLinkSelectOverride={onArticleLinkSelectOverride} />
                         </div>
                     );
                 }
                 if (part.startsWith('<s>')) {
                     const innerContent = part.substring(3, part.length - 4);
-                    return <s key={key} className="text-slate-400"><InteractiveText text={innerContent} {...props} /></s>;
+                    return <s key={key} className="text-slate-400"><InteractiveText text={innerContent} {...props} onArticleLinkSelectOverride={onArticleLinkSelectOverride} /></s>;
                 }
                 
                 return part.split('\n').map((p, pIndex) => {
                     if (!p.trim()) return null;
-                    return <p key={`${key}-${pIndex}`} className="text-slate-700 leading-relaxed indent-8"><InteractiveText text={p} {...props} /></p>;
+                    return <p key={`${key}-${pIndex}`} className="text-slate-700 leading-relaxed indent-8"><InteractiveText text={p} {...props} onArticleLinkSelectOverride={onArticleLinkSelectOverride} /></p>;
                 });
             })}
         </>
@@ -53,16 +54,16 @@ const LegalTermDisplay: React.FC<{
     term: LegalTerm;
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-    onCrossReferenceSelect: (item: SelectableItem) => void;
-    onTermSelect: (item: SelectableItem) => void;
-}> = ({ term, articleMap, legalTermMap, onCrossReferenceSelect, onTermSelect }) => {
+    onLinkSelect: (item: SelectableItem) => void;
+    onArticleLinkSelectOverride?: (article: Article) => void;
+}> = ({ term, articleMap, legalTermMap, onLinkSelect, onArticleLinkSelectOverride }) => {
     const [activeDocument, setActiveDocument] = useState<LegalTermDocument | null>(term.documents[0] || null);
 
     useEffect(() => {
         setActiveDocument(term.documents[0] || null);
     }, [term]);
 
-    const rendererProps = { articleMap, legalTermMap, onCrossReferenceSelect, onTermSelect };
+    const rendererProps = { articleMap, legalTermMap, onLinkSelect, onArticleLinkSelectOverride };
 
     return (
         <div>
@@ -99,11 +100,11 @@ interface SidePanelProps {
     onClose: () => void;
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-    onCrossReferenceSelect: (item: SelectableItem) => void;
-    onTermSelect: (item: SelectableItem) => void;
+    onLinkSelect: (item: SelectableItem) => void;
+    onArticleLinkSelectInPanel: (article: Article) => void;
 }
 
-const SidePanel: React.FC<SidePanelProps> = ({ selectedItem, onClose, articleMap, legalTermMap, onCrossReferenceSelect, onTermSelect }) => {
+const SidePanel: React.FC<SidePanelProps> = ({ selectedItem, onClose, articleMap, legalTermMap, onLinkSelect, onArticleLinkSelectInPanel }) => {
     const renderContent = () => {
         if (!selectedItem) return null;
 
@@ -114,8 +115,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ selectedItem, onClose, articleMap
                         text={p}
                         articleMap={articleMap}
                         legalTermMap={legalTermMap}
-                        onCrossReferenceSelect={onCrossReferenceSelect}
-                        onTermSelect={onTermSelect}
+                        onLinkSelect={onLinkSelect}
+                        onArticleLinkSelectOverride={onArticleLinkSelectInPanel}
                     />
                 </p>
             ));
@@ -126,8 +127,8 @@ const SidePanel: React.FC<SidePanelProps> = ({ selectedItem, onClose, articleMap
                         term={selectedItem}
                         articleMap={articleMap}
                         legalTermMap={legalTermMap}
-                        onCrossReferenceSelect={onCrossReferenceSelect}
-                        onTermSelect={onTermSelect}
+                        onLinkSelect={onLinkSelect}
+                        onArticleLinkSelectOverride={onArticleLinkSelectInPanel}
                     />;
         }
 

@@ -1,3 +1,4 @@
+
 import type { LegalTerm } from '../../types';
 
 export const immunizationTerm: LegalTerm = {

@@ -1,3 +1,4 @@
+
 import type { LegalTerm } from '../../types';
 
 export const infectedZoneTerm: LegalTerm = {
@@ -49,11 +50,11 @@ export const infectedZoneTerm: LegalTerm = {
         "(๓๕) สาธารณรัฐสหกรณ์กายอานา (Co - operative Republic of Guyana)",
         "(๓๖) สาธารณรัฐอาร์เจนตินา (Argentine Republic)",
         "(๓๗) สาธารณรัฐอิเควทอเรียลกินี (Republic of Equatorial Guinea)",
-        "(３８) สาธารณรัฐอิสลามแกมเบีย (The Islamic Republic of The Gambia)",
-        "(３９) สาธารณรัฐอิสลามมอริเตเนีย (The Islamic Republic of Mauritania)",
-        "(๔０) สาธารณรัฐเอกวาดอร์ (Republic of Ecuador)",
-        "(๔１) สาธารณรัฐแองโกลา (Republic of Angola)",
-        "(๔２) สาธารณรัฐแอฟริกากลาง (Central African Republic)",
+        "(๓๘) สาธารณรัฐอิสลามแกมเบีย (The Islamic Republic of The Gambia)",
+        "(๓๙) สาธารณรัฐอิสลามมอริเตเนีย (The Islamic Republic of Mauritania)",
+        "(๔๐) สาธารณรัฐเอกวาดอร์ (Republic of Ecuador)",
+        "(๔๑) สาธารณรัฐแองโกลา (Republic of Angola)",
+        "(๔๒) สาธารณรัฐแอฟริกากลาง (Central African Republic)",
         "ข้อ ๒ ประกาศนี้ให้ใช้บังคับตั้งแต่วันถัดจากวันประกาศในราชกิจจานุเบกษาเป็นต้นไป",
         "ประกาศ ณ วันที่ ๒๓ พฤศจิกายน พ.ศ. ๒๕๖๐",
         "ปิยะสกล สกลสัตยาทร",

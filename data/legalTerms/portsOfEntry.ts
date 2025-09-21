@@ -1,3 +1,4 @@
+
 import type { LegalTerm } from '../../types';
 
 export const portsOfEntryTerm: LegalTerm = {
@@ -36,7 +37,7 @@ export const portsOfEntryTerm: LegalTerm = {
 <tr><td class="border-b p-2">๑๘</td><td class="border-b p-2">ท่าเรือ</td><td class="border-b p-2">กันตัง</td><td class="border-b p-2">ตรัง</td></tr>
 <tr><td class="border-b p-2">๑๙</td><td class="border-b p-2">พรมแดน</td><td class="border-b p-2">บ้านหาดเล็ก</td><td class="border-b p-2">ตราด</td></tr>
 <tr><td class="border-b p-2">๒๐</td><td class="border-b p-2">ท่าอากาศยาน</td><td class="border-b p-2">แม่สอด</td><td class="border-b p-2">ตาก</td></tr>
-<tr><td class="border-b p-2">๒๑</td><td class="border-b p-2">พรมแดน</td><td class="border-b p-2">แม่สอด</td><td class="border-b p-2">ตาก</td></tr>
+<tr><td class="border-b p-2">๒１</td><td class="border-b p-2">พรมแดน</td><td class="border-b p-2">แม่สอด</td><td class="border-b p-2">ตาก</td></tr>
 <tr><td class="border-b p-2">๒๒</td><td class="border-b p-2">พรมแดน</td><td class="border-b p-2">ท่าเทียบเรือเทศบาลเมืองนครพนม</td><td class="border-b p-2">นครพนม</td></tr>
 <tr><td class="border-b p-2">๒๓</td><td class="border-b p-2">พรมแดน</td><td class="border-b p-2">สะพานมิตรภาพ ๓ (นครพนม)</td><td class="border-b p-2">นครพนม</td></tr>
 <tr><td class="border-b p-2">๒๔</td><td class="border-b p-2">ท่าเรือ</td><td class="border-b p-2">นครศรีธรรมราช</td><td class="border-b p-2">นครศรีธรรมราช</td></tr>

@@ -83,18 +83,18 @@ const AppContent: React.FC = () => {
         setSelectedItem(item);
         window.location.hash = encodeURIComponent('title' in item ? item.title : item.term);
     };
-
-    const handleCrossReferenceSelect = (item: SelectableItem) => {
-        scrollOnNextHashChange.current = false; // Don't scroll main view
-        setSelectedItem(item);
-        window.location.hash = encodeURIComponent('title' in item ? item.title : item.term);
-    };
     
-    const handleTermSelect = (item: SelectableItem) => {
+    const handleLinkSelect = (item: SelectableItem) => {
         scrollOnNextHashChange.current = false; // Don't scroll main view
         setSelectedItem(item);
         window.location.hash = encodeURIComponent('title' in item ? item.title : item.term);
     }
+    
+    const handleArticleLinkInSidePanel = (article: Article) => {
+        scrollOnNextHashChange.current = true; // Scroll main view
+        // DO NOT setSelectedItem, so the side panel stays open
+        window.location.hash = encodeURIComponent(article.title);
+    };
 
     const clearSelection = () => {
         setSelectedItem(null);
@@ -115,8 +115,7 @@ const AppContent: React.FC = () => {
                             articleMap={articleMap}
                             legalTermMap={legalTermMap}
                             onMainItemSelect={handleMainItemSelect}
-                            onCrossReferenceSelect={handleCrossReferenceSelect}
-                            onTermSelect={handleTermSelect}
+                            onLinkSelect={handleLinkSelect}
                         />
                     </div>
                     <div className="w-full lg:w-[35%] xl:w-1/3">
@@ -125,8 +124,8 @@ const AppContent: React.FC = () => {
                             onClose={clearSelection}
                             articleMap={articleMap}
                             legalTermMap={legalTermMap}
-                            onCrossReferenceSelect={handleCrossReferenceSelect}
-                            onTermSelect={handleTermSelect}
+                            onLinkSelect={handleLinkSelect}
+                            onArticleLinkSelectInPanel={handleArticleLinkInSidePanel}
                         />
                     </div>
                 </div>
