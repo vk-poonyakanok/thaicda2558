@@ -1,27 +1,20 @@
-# Thai Communicable Disease Act 2558 (Unofficial Viewer)
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-**Unofficial Interactive viewer for the Thai Communicable Disease Act B.E. 2558 (2015)**, built as a web application.  
-Live at: [https://thaicda2558.vercel.app/](https://thaicda2558.vercel.app/)
+# Run and deploy your AI Studio app
 
----
+This contains everything you need to run your app locally.
 
-## Features
-- Browse the **Communicable Disease Act 2558** with a clean, interactive interface.
-- Hover over sections to quickly preview article text.
-- Click on articles to view the full content on the right panel.
-- Built with **React + Vercel** for fast, responsive deployment.
-- Designed for students, lawyers, health professionals, and the public.
+View your app in AI Studio: https://ai.studio/apps/drive/1qsyTJjDiuUDyqNuaiKS0nfDvzJifGlM_
 
-## Contribution
-- Found a typo, wrong text, or missing content? Please open an issue or submit a pull request.
-- Suggestions for new features or improvements? I’d love to hear them!
+## Run Locally
+
+**Prerequisites:**  Node.js
 
 
-## Disclaimer
-⚠️ This project is **unofficial** and for educational purposes only.  
-For official legal interpretation, please consult the **Royal Thai Government Gazette** or a licensed legal professional.
-
----
-
-## Acknowledgment
-This repository is generated from [google-gemini/aistudio-repository-template](https://github.com/google-gemini/aistudio-repository-template).
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
