@@ -22,7 +22,7 @@ const sanitizeHTML = (str: string): string => {
 export const generateArticleTooltip = (article: Article): string => {
     const title = `<b>${sanitizeHTML(article.title)}</b>`;
     const previewContent = article.content[0] 
-        ? `<p class="text-xs text-slate-600 mt-1">${sanitizeHTML(article.content[0].substring(0, 150))}${article.content[0].length > 150 ? '...' : ''}</p>` 
+        ? `<p class="text-xs text-slate-300 mt-1">${sanitizeHTML(article.content[0].substring(0, 150))}${article.content[0].length > 150 ? '...' : ''}</p>` 
         : '';
     const footer = `<div class="text-xs text-slate-400 italic mt-2">คลิกเพื่อดูรายละเอียดทั้งหมด</div>`;
     return `<div class="prose prose-sm max-w-none p-1">${title}${previewContent}${footer}</div>`;
@@ -31,7 +31,7 @@ export const generateArticleTooltip = (article: Article): string => {
 export const generateLegalTermTooltip = (term: LegalTerm): string => {
     const title = `<b>${sanitizeHTML(term.displayName || term.term)}</b>`;
     const documentsList = term.documents.length > 0
-        ? `<div class="text-xs text-slate-600 mt-1">เอกสารที่เกี่ยวข้อง:</div><ul class="list-disc list-inside text-xs pl-1 mt-1">${term.documents.map(doc => `<li>${sanitizeHTML(doc.title)}</li>`).join('')}</ul>`
+        ? `<div class="text-xs text-slate-300 mt-1">เอกสารที่เกี่ยวข้อง:</div><ul class="list-disc list-inside text-xs pl-1 mt-1 text-slate-300">${term.documents.map(doc => `<li>${sanitizeHTML(doc.title)}</li>`).join('')}</ul>`
         : '';
     const footer = `<div class="text-xs text-slate-400 italic mt-2">คลิกเพื่อดูรายละเอียดทั้งหมด</div>`;
 
