@@ -1,6 +1,6 @@
-# Thai Communicable Disease Act 2558 (Viewer)
+# Thai Communicable Disease Act 2558 (Unofficial Viewer)
 
-**Interactive viewer for the Thai Communicable Disease Act B.E. 2558 (2015)**, built as a web application.  
+**Unofficial Interactive viewer for the Thai Communicable Disease Act B.E. 2558 (2015)**, built as a web application.  
 Live at: [https://thaicda2558.vercel.app/](https://thaicda2558.vercel.app/)
 
 ---
@@ -16,3 +16,8 @@ Live at: [https://thaicda2558.vercel.app/](https://thaicda2558.vercel.app/)
 - Found a typo, wrong text, or missing content? Please open an issue or submit a pull request.
 - Suggestions for new features or improvements? We’d love to hear them!
 - Remarks about the law content? Contributions are welcome, but note that this project provides only a viewer — the official source remains the Royal Thai Government Gazette.
+
+---
+
+## Acknowledgment
+This repository is generated from [google-gemini/aistudio-repository-template](https://github.com/google-gemini/aistudio-repository-template).
