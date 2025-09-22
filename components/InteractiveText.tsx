@@ -19,7 +19,27 @@ const sanitizeHTML = (str: string): string => {
     });
 };
 
-const TippyWrapper: React.FC<{ content: string; children: React.ReactElement }> = ({ content, children }) => {
+export const generateArticleTooltip = (article: Article): string => {
+    const title = `<b>${sanitizeHTML(article.title)}</b>`;
+    const previewContent = article.content[0] 
+        ? `<p class="text-xs text-slate-600 mt-1">${sanitizeHTML(article.content[0].substring(0, 150))}${article.content[0].length > 150 ? '...' : ''}</p>` 
+        : '';
+    const footer = `<div class="text-xs text-slate-400 italic mt-2">คลิกเพื่อดูรายละเอียดทั้งหมด</div>`;
+    return `<div class="prose prose-sm max-w-none p-1">${title}${previewContent}${footer}</div>`;
+}
+
+export const generateLegalTermTooltip = (term: LegalTerm): string => {
+    const title = `<b>${sanitizeHTML(term.displayName || term.term)}</b>`;
+    const documentsList = term.documents.length > 0
+        ? `<div class="text-xs text-slate-600 mt-1">เอกสารที่เกี่ยวข้อง:</div><ul class="list-disc list-inside text-xs pl-1 mt-1">${term.documents.map(doc => `<li>${sanitizeHTML(doc.title)}</li>`).join('')}</ul>`
+        : '';
+    const footer = `<div class="text-xs text-slate-400 italic mt-2">คลิกเพื่อดูรายละเอียดทั้งหมด</div>`;
+
+    return `<div class="prose prose-slate max-w-none prose-sm p-1">${title}${documentsList}${footer}</div>`;
+}
+
+
+export const TippyWrapper: React.FC<{ content: string; children: React.ReactElement }> = ({ content, children }) => {
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -30,12 +50,17 @@ const TippyWrapper: React.FC<{ content: string; children: React.ReactElement }> 
         theme: 'light-border',
         placement: 'top',
         allowHTML: true,
+        interactive: false,
         maxWidth: 350,
+        appendTo: () => document.body,
       });
       return () => instance.destroy();
     }
   }, [content]);
 
+  // Fix: The original `React.cloneElement` call has a TypeScript error because it cannot
+  // guarantee that the child element accepts a `ref`. Wrapping the child in a `<span>`
+  // and attaching the ref to it is a safer and more robust pattern for tooltips.
   return <span ref={ref}>{children}</span>;
 };
 
@@ -72,9 +97,7 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, leg
             
             const term = legalTermMap.get(trimmedPart);
             if (term) {
-                const termTitle = sanitizeHTML(term.displayName || term.term);
-                const docList = term.documents.map(d => `<li>${sanitizeHTML(d.title)}</li>`).join('');
-                const tooltipContent = `<b>${termTitle}</b><ul class="list-disc list-inside text-left text-xs mt-1">${docList}</ul>`;
+                const tooltipContent = generateLegalTermTooltip(term);
                 return (
                     <TippyWrapper key={index} content={tooltipContent}>
                         <a
@@ -92,7 +115,7 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ text, articleMap, leg
             const article = articleMap.get(normalizedPart);
             if (article) {
                 const clickHandler = onArticleLinkSelectOverride ? () => onArticleLinkSelectOverride(article) : () => onLinkSelect(article);
-                const tooltipContent = `<b>${sanitizeHTML(article.title)}</b><p class="text-xs mt-1">${sanitizeHTML(article.content[0] || 'ไม่มีข้อมูล')}</p>`;
+                const tooltipContent = generateArticleTooltip(article);
                 return (
                     <TippyWrapper key={index} content={tooltipContent}>
                         <a

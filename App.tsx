@@ -21,8 +21,8 @@ const DisclaimerBanner: React.FC = () => (
 
 
 const AppContent: React.FC = () => {
-    const [selectedItem, setSelectedItem] = useState<SelectableItem | null>(null);
     const location = useLocation();
+    const [selectedItem, setSelectedItem] = useState<SelectableItem | null>(null);
     const scrollOnNextHashChange = useRef(true);
 
     const articleMap = useMemo(() => {
@@ -37,31 +37,6 @@ const AppContent: React.FC = () => {
         legalTermsData.forEach(term => map.set(term.term, term));
         return map;
     }, []);
-
-    // Effect to handle selection based on hash
-    useEffect(() => {
-        const hash = decodeURIComponent(location.hash.replace('#', ''));
-        if (!hash) {
-            setSelectedItem(null);
-            return;
-        }
-
-        const normalizedHash = normalizeText(hash);
-        const foundArticle = articleMap.get(normalizedHash);
-        if (foundArticle) {
-            setSelectedItem(foundArticle);
-            return;
-        }
-
-        const foundTerm = legalTermMap.get(hash);
-        if (foundTerm) {
-            setSelectedItem(foundTerm);
-            return;
-        }
-
-        // If it's a chapter hash or something else, there should be no selected item
-        setSelectedItem(null);
-    }, [location, articleMap, legalTermMap]);
 
     // Effect to handle scrolling based on hash and a flag
     useEffect(() => {
@@ -79,36 +54,40 @@ const AppContent: React.FC = () => {
 
 
     const handleMainItemSelect = (item: SelectableItem) => {
-        scrollOnNextHashChange.current = true;
         setSelectedItem(item);
-        window.location.hash = encodeURIComponent('title' in item ? item.title : item.term);
+        scrollOnNextHashChange.current = true;
+        const hash = 'title' in item ? item.title : item.term;
+        // Use history.pushState to prevent double-triggering useEffect
+        history.pushState(null, '', `#${encodeURIComponent(hash)}`);
+        // Manually trigger scroll
+        const element = document.getElementById(hash);
+        if (element) {
+            setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        }
     };
     
     const handleLinkSelect = (item: SelectableItem) => {
-        scrollOnNextHashChange.current = false; // Don't scroll main view
         setSelectedItem(item);
-        window.location.hash = encodeURIComponent('title' in item ? item.title : item.term);
+        scrollOnNextHashChange.current = false; // Don't scroll main view
+        const hash = 'title' in item ? item.title : item.term;
+        history.pushState(null, '', `#${encodeURIComponent(hash)}`);
     }
-    
-    const handleArticleLinkInSidePanel = (article: Article) => {
-        scrollOnNextHashChange.current = true; // Scroll main view
-        // DO NOT setSelectedItem, so the side panel stays open
-        window.location.hash = encodeURIComponent(article.title);
-    };
 
-    const clearSelection = () => {
+    const handleArticleLinkSelectInPanel = (article: Article) => {
+        setSelectedItem(article);
+        // Do not change scroll flag or URL hash, just update the panel content
+    }
+
+    const handleCloseSidePanel = () => {
         setSelectedItem(null);
-        if (window.location.hash) {
-            history.pushState("", document.title, window.location.pathname + window.location.search);
-        }
-    }
-
+    };
+    
     return (
         <div className="flex flex-col min-h-screen">
             <DisclaimerBanner />
             <main className="flex-grow container mx-auto px-4 py-8">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    <div className="w-full lg:w-[65%] xl:w-2/3">
+                 <div className="lg:grid lg:grid-cols-3 lg:gap-8">
+                    <div className="lg:col-span-2">
                         <MainContent 
                             act={actData} 
                             relatedLaws={relatedLawData} 
@@ -118,14 +97,14 @@ const AppContent: React.FC = () => {
                             onLinkSelect={handleLinkSelect}
                         />
                     </div>
-                    <div className="w-full lg:w-[35%] xl:w-1/3">
+                    <div>
                         <SidePanel 
-                            selectedItem={selectedItem} 
-                            onClose={clearSelection}
+                            selectedItem={selectedItem}
+                            onClose={handleCloseSidePanel}
                             articleMap={articleMap}
                             legalTermMap={legalTermMap}
                             onLinkSelect={handleLinkSelect}
-                            onArticleLinkSelectInPanel={handleArticleLinkInSidePanel}
+                            onArticleLinkSelectInPanel={handleArticleLinkSelectInPanel}
                         />
                     </div>
                 </div>

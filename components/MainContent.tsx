@@ -1,24 +1,25 @@
 
 import React, { useState } from 'react';
 import type { ActData, Article, SelectableItem, RelatedLawCategory, LegalTerm } from '../types';
-import InteractiveText from './InteractiveText';
+import InteractiveText, { TippyWrapper, generateArticleTooltip } from './InteractiveText';
 
 const ArticleDisplay: React.FC<{
     article: Article;
-    onMainItemSelect: (article: Article) => void;
     onLinkSelect: (item: SelectableItem) => void;
     articleMap: Map<string, Article>;
     legalTermMap: Map<string, LegalTerm>;
-}> = ({ article, onMainItemSelect, onLinkSelect, articleMap, legalTermMap }) => (
+}> = ({ article, onLinkSelect, articleMap, legalTermMap }) => (
     <div key={article.id} id={article.title} className="mb-6 scroll-mt-8">
         <h5 className="font-semibold text-lg">
-            <a 
-                href={`#${encodeURIComponent(article.title)}`} 
-                onClick={(e) => {e.preventDefault(); onMainItemSelect(article)}}
-                className="text-sky-700 hover:text-sky-900 hover:underline"
-            >
-                {article.title}
-            </a>
+            <TippyWrapper content={generateArticleTooltip(article)}>
+                <a 
+                    href={`#${encodeURIComponent(article.title)}`} 
+                    onClick={(e) => {e.preventDefault(); onLinkSelect(article)}}
+                    className="text-sky-700 hover:text-sky-900 hover:underline"
+                >
+                    {article.title}
+                </a>
+            </TippyWrapper>
         </h5>
         {article.content.map((p, index) => (
             <p key={index} className="text-slate-700 leading-relaxed indent-8">
@@ -99,23 +100,36 @@ const RelatedLaws: React.FC<{
     );
 };
 
-const TableOfContents: React.FC<{ act: ActData }> = ({ act }) => (
+const TableOfContents: React.FC<{ act: ActData, onArticleSelect: (article: Article) => void }> = ({ act, onArticleSelect }) => (
     <div className="mb-8 p-6 bg-slate-50 rounded-lg border border-slate-200">
         <h4 className="font-bold text-xl mb-4">สารบัญ</h4>
-        <ul className="list-disc list-inside space-y-2 text-slate-700">
-            {act.chapters.map(chapter => (
+        <ol className="space-y-3">
+            {[...act.chapters, act.transitionalProvisions].map(chapter => (
                 <li key={`outline-${chapter.id}`}>
-                    <a href={`#${chapter.id}`} className="text-sky-700 hover:underline">
+                    <a href={`#${chapter.id}`} className="text-sky-700 hover:underline font-semibold text-base block mb-2">
                         {chapter.title}
                     </a>
+                    {chapter.articles.length > 0 && (
+                        <div className="ml-5 text-slate-600 text-sm leading-relaxed">
+                           {chapter.articles.map((article, index) => (
+                               <React.Fragment key={`outline-${article.id}`}>
+                                   <TippyWrapper content={generateArticleTooltip(article)}>
+                                        <a 
+                                            href={`#${encodeURIComponent(article.title)}`}
+                                            onClick={(e) => { e.preventDefault(); onArticleSelect(article); }}
+                                            className="text-sky-700 hover:underline"
+                                        >
+                                        {article.title}
+                                        </a>
+                                   </TippyWrapper>
+                                   {index < chapter.articles.length - 1 && <span className="mr-2">,</span>}
+                               </React.Fragment>
+                           ))}
+                        </div>
+                    )}
                 </li>
             ))}
-            <li key={`outline-${act.transitionalProvisions.id}`}>
-                 <a href={`#${act.transitionalProvisions.id}`} className="text-sky-700 hover:underline">
-                    {act.transitionalProvisions.title}
-                </a>
-            </li>
-        </ul>
+        </ol>
     </div>
 );
 
@@ -138,7 +152,7 @@ const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap,
                 <p className="mt-4 text-slate-500">{act.enactedDate}</p>
             </div>
 
-            <TableOfContents act={act} />
+            <TableOfContents act={act} onArticleSelect={onMainItemSelect} />
 
             <div className="prose prose-slate max-w-none prose-h4:font-bold prose-h4:text-2xl prose-h4:text-slate-800 prose-h4:border-b-2 prose-h4:border-slate-200 prose-h4:pb-2 prose-h4:mb-4 prose-h5:font-semibold prose-h5:text-lg">
                 <div className="mb-8">
@@ -152,7 +166,6 @@ const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap,
                            <ArticleDisplay 
                                 key={article.id} 
                                 article={article} 
-                                onMainItemSelect={onMainItemSelect}
                                 onLinkSelect={onLinkSelect}
                                 articleMap={articleMap} 
                                 legalTermMap={legalTermMap}
@@ -167,7 +180,6 @@ const MainContent: React.FC<MainContentProps> = ({ act, relatedLaws, articleMap,
                          <ArticleDisplay 
                             key={article.id} 
                             article={article} 
-                            onMainItemSelect={onMainItemSelect} 
                             onLinkSelect={onLinkSelect}
                             articleMap={articleMap}
                             legalTermMap={legalTermMap} 
